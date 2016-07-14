@@ -1,0 +1,21 @@
+{
+  "name": "dataset.js",
+  "version": "1.0.0",
+  "description": "A dead-simple way of loading arbitrary text files (json, csvs, etc) into the browser and do things with them sequentially",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "etl",
+    "dataset"
+  ],
+  "author": "Hamilton Ulmer",
+  "license": "MPL",
+  "dependencies": {
+     "rollup": "0.31",
+      "tape": "4",
+      "d3-request": "1.0.0",
+      "rollup-plugin-uglify": "1.0.1"
+  }
+}

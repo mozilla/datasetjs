@@ -1,0 +1,103 @@
+body {
+	font-family: 'Assistant', sans-serif;
+	font-size:17px;
+}
+
+header {
+	margin-bottom:30px;
+}
+
+header h1 {
+	text-align:center;
+	margin:0px;
+    padding:0px;
+    font-weight: 800;
+    font-size:80px;
+}
+
+header p#tagline {
+	text-align:center;
+	padding:0px;
+	font-weight:200;
+	font-size:22px;
+	margin:0px;
+	font-style:italic;
+}
+
+header p#alpha {
+	font-weight:900;
+	text-align:center;
+	color:white;
+	background-color: 	#FA8072;
+	width:300px;
+	margin:auto;
+	border-radius:5px;
+	margin-top:20px;
+}
+
+h2 {
+	margin-top:30px;
+	font-size:40px;
+	font-weight:200;
+}
+
+ul#topnav {
+	margin:auto;
+	margin-bottom:30px;
+	width:100%;
+	text-align:center;
+}
+
+ul#topnav li {
+	width:200px;
+	padding:15px;
+	text-align:center;
+	display:inline-block;
+}
+
+ul#topnav a i {
+	display:block;
+	font-size:35px;
+}
+
+ul#topnav a {
+	font-size:25px;
+	font-weight:300;
+}
+
+div#main-elem {
+	width:850px;
+	margin:auto;
+	margin-top:20px;
+	background-color:white;
+	padding:30px;
+}
+
+pre {
+	margin-top:60px;
+}
+
+ul.api {
+	margin-top:20px;
+	list-style:none;
+	padding-left:0px;
+}
+
+ul.api code.api-head {
+	display:block;
+	margin-bottom:20px;
+	background-color:white;
+	font-size:20px;
+	font-weight:300;
+	text-decoration:underline;
+}
+
+ul.api li {
+	margin-bottom:20px;
+}
+
+div.args {
+	text-transform:uppercase;
+	margin-bottom:20px;
+	font-weight:300;
+}

@@ -1,0 +1,177 @@
+<html lang='en'>
+<head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta property='og:title' content='dataset.js' />
+    <meta property='og:description' content='dataset.js is a wrapper around javascript Promises that makes it easy for the data scientist to load & mix data sets from different files, without worrying about that asyncronous stuff.' />
+    <meta property='og:type' content='website' />
+    <meta property='og:url' content='http://datasetjs.org/' />
+    <meta property='og:site_name' content='dataset.js' />
+
+
+    <title>dataset.js ~ load csv and json files kind-of syncronously, without hassle</title>
+
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css' rel='stylesheet' type='text/css'>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+<link href="https://fonts.googleapis.com/css?family=Assistant:200,300,400,600,700,800" rel="stylesheet">
+    <link href='css/metricsgraphics.css' rel='stylesheet' type='text/css'>
+
+
+    <link href='css/style.css' rel='stylesheet' type='text/css'>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js' charset='utf-8'></script>
+    
+    <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+<script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
+<script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+<script src="https://d3js.org/d3-request.v1.min.js"></script>
+    <script src='../../build/dataset.js' charset='utf-8'></script>
+
+
+    <script src='js/metricsgraphics.js' charset='utf-8'></script>
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+
+</head>
+
+<body>
+   <a href="https://github.com/mozilla/datasetjs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+<div id='main-elem'>
+    <header>
+        <h1>dataset.js</h1>
+
+        <p id='tagline'>The simplest way to chain together &amp; harmonize the loading of datasets in the browser</p>
+
+        <p id='alpha'>v0.1 alpha - very young, very fragile</p>
+    </header>
+
+    <ul id='topnav'>
+        <a href='https://github.com/mozilla/datasetjs/releases'><li><i class="fa fa-download" aria-hidden="true"></i> Download</li></a>
+        <a href='http://github.com/mozilla/datasetjs/issues'><li><i class="fa fa-github" aria-hidden="true"></i>
+Github</li></a>
+    </ul>
+
+    <h2>Motivation</h2>
+
+    <p id='intro'>
+        Displaying data when your data sources come from a number of flat files quickly becomes an unmanageable task. This kind of task is a subset of what programmers have named "callback hell." Javascript is asyncronous in how it requests data, so when you want to pull a number of files and wait for them all to finish before doing something, you're left with two options: either nest your ajax requests, which can become cumbersome and difficult to read and manage, or; use javascript Promises, which - while very powerful - takes a while to wrap your head around if you're not a javascript native. The kind of people who need to display data in the browser are often not strong javascript programmers. Callback hell is especially more likely for programmers who are unfamiliar with javascript. <code>dataset.js</code> aims to mitigate this kind of task.
+    </p>
+
+
+    <h2>An example</h2>
+    <p>The following code snippet loads two csv files into the browser, and the second one waits for the first, and then you plot the data using both.</p>
+
+<pre><code>var Dashboard = new DB.dashboard(); 
+
+Dashboard.dataset('releaseData')                   // this is the namespace for this data set
+    .fetchJSON('/data/release-data.json')          // fetch json - expects an array of objects
+    .format(function(data){                        // most data needs some conversion
+        return data.map(function(d){ /* ... */ })
+    });
+
+// Ok. Now let's load another dataset - a csv - and plot it using MetricsGraphics.js.
+// This other data set requires the 'release-data' json file we loaded before.
+
+Dashboard.dataset('monthlyData')
+    .fetchCSV('/data/monthly-downloads.csv')   // csv files need to have a header.
+    .format(function(data){ /* ... */ })       // format the data, as before.
+    .waitFor('releaseData')                    // waits for this namespace to resolve
+    .then(function(dataset, db) {
+        MG.data_graphic( /* ... */ );
+    })
+
+// broken down, these calls are as simple as this:
+
+Dashboard.dataset('releaseData')
+    .fetchJSON(releasePath)
+    .format(releaseFormatFcn);
+
+Dashboard.dataset('monthlyData')
+    .fetchCSV(monthlyPath)
+    .format(monthlyFormatter)
+    .waitFor('releaseData')
+    .then(plotTheData);
+
+</code></pre>
+
+<h2>The API</h2>
+
+<p>Let's assume you've made a dataset variable with <code>var DS = dataset.collection()</code>.</p>
+
+<p>Here are the main concepts behind <code>dataset.js</code>:
+
+<ul>
+    <li>A page has a <i>collection</i> of datasets. This is all the different data files you will be using on your page.</li>
+    <li>When you add a dataset, you give it a <i>namespace</i>, a small piece of metadata that lets you recall the data set.</li>
+    <li>A <i>dataset</i> is a loaded file, paired with a namespace.</li>
+</ul>
+
+</p>
+
+<ul class='api'>
+    <li><code class='api-head'>DS.dataset('namespace')</code>
+
+    <div class='args'>
+        namespace (string)
+    </div>
+
+     create a new namespace for the impending dataset. Doesn't actually load anything, so think of this as tagging the dataset so you can grab it later. Calling DB.dataset() does not actually retrieve the data - you will have to call something like db.fetchCSV() to pull the data.</li>
+    <li><code class='api-head'>DB.hasDataset('namespace')</code> 
+
+    <div class='args'>
+        namespace (string)
+    </div>
+
+        returns true if the namespace has been declared.
+    </li>
+    <li><code class='api-head'>DS.fetchCSV('/path/to/data.csv')</code> 
+
+    <div class='args'>
+        path (string)
+    </div>
+    load a CSV. Expects a header row.</li>
+    <li><code>DS.fetchJSON('/path/to/data.json')</code> 
+
+    <div class='args'>
+        path (string)
+    </div>
+
+    load a JSON file.</li>
+    <li><code class='api-head'>DS.fetchText('/path/to/data.txt')</code> 
+
+
+    <div class='args'>
+        path (string)
+    </div>
+    load a generic text file.</li>
+
+    <li><code class='api-head'>format(function(data){...})</code>
+    <div class='args'>
+        formatter (function)
+    </div>
+
+     Format the loaded data in some way. Expects you to return the data at the end.</li>
+
+
+    <li><code class='api-head'>DS.waitFor('namespace')</code> 
+
+    <div class='args'>
+        namespace (string)
+    </div>
+
+    waits for the chain of tasks in 'namespace' to resolve. Very useful if 'namespace' has a few asyncronous calls that might make it so the current namespace would otherwise finish before it.</li>
+</ul>
+
+
+</div>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src='js/site.js' charset='utf-8'></script>
+
+
+</body>
+</html>

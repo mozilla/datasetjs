@@ -1,5 +1,7 @@
 # dashboard.js
 
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
+
 __NOTE:__ This library is very alpha. Parts may change. 
 
 __dependencies (at the moment)__: [d3](https://github.com/d3/d3)  or [d3-request](https://github.com/d3/d3-request), [crossfilter](https://github.com/crossfilter/crossfilter).

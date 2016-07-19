@@ -2,6 +2,7 @@ import {
     db_basic_setup,
     db_define_dataset_steps,
     db_then,
+    db_index,
     db_promise_factory,
     db_fetch,
     db_format

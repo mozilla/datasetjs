@@ -11,6 +11,25 @@
        db_obj.last_ns = ns;
    }
 
+   function db_index(features_to_index){
+       return function(passed_obj){
+           return new Promise(function(resolve, reject){
+               if (!features_to_index){
+                   // do something where we pull the features to index automatically.
+               }
+               passed_obj.dataset.data = crossfilter(passed_obj.dataset.data);
+               passed_obj.dataset.dims = {};
+               passed_obj.dataset.indexed = true;
+               var feature;
+               for (var i =0; i< features_to_index.length;i++){
+                   feature = features_to_index[i];
+                   passed_obj.dataset.dims[feature] = passed_obj.dataset.data.dimension(function(d){return d[feature]});
+               }
+               resolve(passed_obj);
+           });
+       }
+   }
+
    function db_define_dataset_steps(db_obj, args){
        // This function sets a fetch function, a format function,
        // and then further contextualizes these functions as chain-points in the promise.
@@ -28,7 +47,8 @@
        }
    }
 
-   function db_then$1(db_obj, fcn){
+
+   function db_then(db_obj, fcn){
        db_obj.data[db_obj.last_ns].promise = db_obj.data[db_obj.last_ns].promise.then(fcn);
    }
 
@@ -75,7 +95,7 @@
        this.with = function(ns, fcn){
            this.last_ns = ns;
            var _this = this;
-           db_then$1(_this, db_promise_factory(fcn));
+           db_then(_this, db_promise_factory(fcn));
            
        }
 
@@ -103,32 +123,32 @@
 
        this.then = function(fcn){
            var _this = this;
-           db_then$1(_this, db_promise_factory(fcn));
+           db_then(_this, db_promise_factory(fcn));
            return this;
 
        }
 
        this.fetchCSV = function(path){
            var _this = this;
-           db_then$1(_this, db_fetch(d3.csv, path));
+           db_then(_this, db_fetch(d3.csv, path));
            return this;
        }
 
        this.fetchJSON = function(path){
            var _this = this;
-           db_then$1(_this, db_fetch(d3.json, path));
+           db_then(_this, db_fetch(d3.json, path));
            return this;
        }
 
        this.fetchText = function(path){
            var _this = this;
-           db_then$1(_this, db_fetch(d3.text, path));
+           db_then(_this, db_fetch(d3.text, path));
            return this;
        }
 
        this.format = function (fcn) {
            var _this = this;
-           db_then$1(_this, db_format(fcn));
+           db_then(_this, db_format(fcn));
            return this;
        }
 
@@ -165,25 +185,6 @@
        }
 
        return this;
-   }
-
-   function db_index$1(features_to_index){
-       return function(passed_obj){
-           return new Promise(function(resolve, reject){
-               if (!features_to_index){
-                   // do something where we pull the features to index automatically.
-               }
-               passed_obj.dataset.data = crossfilter(passed_obj.dataset.data);
-               passed_obj.dataset.dims = {};
-               passed_obj.dataset.indexed = true;
-               var feature;
-               for (var i =0; i< features_to_index.length;i++){
-                   feature = features_to_index[i];
-                   passed_obj.dataset.dims[feature] = passed_obj.dataset.data.dimension(function(d){return d[feature]});
-               }
-               resolve(passed_obj);
-           });
-       }
    }
 
    function db_indexed_datasets (dashboard){
@@ -288,7 +289,7 @@
 
    function index(features){
        var _this = this;
-       db_then(_this, db_index$1(features));
+       db_then(_this, db_index(features));
        return this;
    }
 

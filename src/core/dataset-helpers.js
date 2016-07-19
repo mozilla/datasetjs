@@ -5,6 +5,25 @@ function db_basic_setup(db_obj, ns){
     db_obj.last_ns = ns;
 }
 
+function db_index(features_to_index){
+    return function(passed_obj){
+        return new Promise(function(resolve, reject){
+            if (!features_to_index){
+                // do something where we pull the features to index automatically.
+            }
+            passed_obj.dataset.data = crossfilter(passed_obj.dataset.data);
+            passed_obj.dataset.dims = {};
+            passed_obj.dataset.indexed = true;
+            var feature;
+            for (var i =0; i< features_to_index.length;i++){
+                feature = features_to_index[i];
+                passed_obj.dataset.dims[feature] = passed_obj.dataset.data.dimension(function(d){return d[feature]});
+            }
+            resolve(passed_obj);
+        });
+    }
+}
+
 function db_define_dataset_steps(db_obj, args){
     // This function sets a fetch function, a format function,
     // and then further contextualizes these functions as chain-points in the promise.
@@ -21,6 +40,7 @@ function db_define_dataset_steps(db_obj, args){
             db_obj.data[ns].promise;
     }
 }
+
 
 function db_then(db_obj, fcn){
     db_obj.data[db_obj.last_ns].promise = db_obj.data[db_obj.last_ns].promise.then(fcn);
@@ -58,8 +78,9 @@ function db_format (fcn) {
 
 export {
     db_basic_setup,
-    db_define_dataset_steps,
     db_then,
+    db_index,
+    db_define_dataset_steps,
     db_promise_factory,
     db_fetch,
     db_format

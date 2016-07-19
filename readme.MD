@@ -19,7 +19,7 @@ Displaying data when your data sources come from a number of flat files quickly 
         });
     
     // Ok. Now let's load another dataset - a csv - and plot it using MetricsGraphics.js.
-    // This other data set requires the 'release-data' json file we loaded before.
+    // This other data set requires the 'releaseData' json file we loaded before.
     
     DS.dataset('monthlyData')
         .fetchCSV('/data/monthly-downloads.csv')   

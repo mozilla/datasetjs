@@ -1,23 +1,5 @@
 import datasetCollection from './dataset-core'
-
-function db_index(features_to_index){
-    return function(passed_obj){
-        return new Promise(function(resolve, reject){
-            if (!features_to_index){
-                // do something where we pull the features to index automatically.
-            }
-            passed_obj.dataset.data = crossfilter(passed_obj.dataset.data);
-            passed_obj.dataset.dims = {};
-            passed_obj.dataset.indexed = true;
-            var feature;
-            for (var i =0; i< features_to_index.length;i++){
-                feature = features_to_index[i];
-                passed_obj.dataset.dims[feature] = passed_obj.dataset.data.dimension(function(d){return d[feature]});
-            }
-            resolve(passed_obj);
-        });
-    }
-}
+import {db_then, db_index} from './dataset-helpers'
 
 function db_indexed_datasets (dashboard){
     var indexed_datasets = {};

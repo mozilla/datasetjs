@@ -11,7 +11,7 @@
     "dataset"
   ],
   "author": "Hamilton Ulmer",
-  "license": "MPL",
+  "license": "MPL-2",
   "dependencies": {
      "rollup": "0.31",
       "tape": "4",

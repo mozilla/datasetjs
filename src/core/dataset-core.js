@@ -60,6 +60,12 @@ function datasetCollection () {
         return this;
     }
 
+    this.fetchTSV = function(path){
+        var _this = this;
+        db_then(_this, db_fetch(d3.tsv, path))
+        return this;
+    }
+
     this.fetchJSON = function(path){
         var _this = this;
         db_then(_this, db_fetch(d3.json, path));
